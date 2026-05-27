@@ -1,0 +1,17 @@
+{
+  "backend": {
+    "version": "v1.0.0",
+    "download_url": "https://github.com/fiqryx/face-sync-updater/releases/download/v1.0.0/backend.zip",
+    "service_name": "backend-service"
+  },
+  "worker": {
+    "version": "v1.0.0",
+    "download_url": "https://github.com/fiqryx/face-sync-updater/releases/download/v1.0.0/worker.zip",
+    "service_name": "worker-service"
+  },
+  "webui": {
+    "version": "v1.0.0",
+    "download_url": "https://github.com/fiqryx/face-sync-updater/releases/download/v1.0.0/webui.zip",
+    "service_name": "webui-service"
+  }
+}
