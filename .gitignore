@@ -1,2 +1,11 @@
 *.zip
+builds/
 temp_updates/
+app-bin/
+storage/
+models/
+# bin/
+.env
+*.bin
+backend
+webui/
