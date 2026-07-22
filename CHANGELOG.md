@@ -8,6 +8,45 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+# 2026-07-22
+
+## [1.5.0] - backend
+### Added
+- Added a full Role-Based Access Control (RBAC) engine supporting granular permissions, role hierarchies, and department scoping.
+- Added a `non_working_day` status code for accurate tracking of scheduled off-days.
+- Added dashboard analytics endpoints to aggregate workforce stats, attendance trends, late ranks, and detection metrics.
+- Added camera management endpoints providing programmatic controls for PTZ movement, manual siren triggers, and Text-to-Speech (TTS) audio playback.
+- Added a CLI `db:status` command returning JSON state (`migrated`, `has_data`) to prevent destructive migrations when core database tables are already populated.
+
+### Fixed
+- Fixed database dump structures to ensure idempotency and prevent duplicate key violations upon re-restoration.
+- Fixed break time deduction rules based on statutory labor standards (*UU Ketenagakerjaan Pasal 79*): break times are no longer subtracted if actual working hours (check-in to check-out) are less than 4 hours.
+- Fixed boundary condition detection logic when processing cross-day overnight shifts.
+
+## [1.4.0] - webui
+### Added
+- Added a comprehensive User Management page featuring user creation, permission toggles, department assignment matrices, and `canManage()` privilege guards.
+- Added a reusable `DepartmentPicker` multi-select dropdown component.
+- Added an Analytic Dashboard page presenting real-time stats across custom date ranges (Today, 7D, 30D, Monthly).
+- Added an Employee Detail view displaying profile info, face enrollment status, current month attendance summary, daily calendar, and recent check-in/out logs.
+- Added a Work Schedule Detail view with full attendance breakdowns, override information, and a visual detection event timeline with preview and download capabilities.
+- Added a Camera Management console (`/cameras/[id]`) featuring live streaming, PTZ directional pad controls, manual siren toggling, TTS text dispatching, device capabilities rechecking, and recognition zone configuration.
+
+### Changed
+- Refactored sidebar navigation logic to dynamically filter items based on active user module read permissions in addition to role thresholds.
+
+## [1.3.0] - worker
+### Added
+- Added spatial Recognition Zone filtering using a Point-in-Polygon algorithm (`_is_in_recognition_zone`). Facial tracks outside normalized (0–1) zone coordinates are automatically filtered out prior to recognition publishing.
+- Updated benchmark visualization tools to render zone polygons (red outlines) and bypass bounding boxes outside defined zones.
+
+## [1.2.1] - launcher
+### Fixed
+- Fixed a data loss vulnerability where a missing lockfile executed `migrate --fresh` even when populated database tables existed. The setup process now inspects `db:status` first, falling back to safe migrations if existing data is detected.
+- Added a robust `extractJSON[T]` stream parser to reliably isolate JSON status objects embedded within mixed log streams.
+
+---
+
 # 2026-07-15
 
 ## [1.3.0] - webui
