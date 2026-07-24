@@ -27,7 +27,7 @@
     ]
   },
   "launcher": {
-    "version": "1.2.1",
+    "version": "1.2.3",
     "download_url": "https://github.com/fiqryx/face-sync/releases/download/launcher-v{version}/launcher_{version}_{runtime}_{os}_amd64.zip",
     "service_name": "launcher",
     "supported_os": [

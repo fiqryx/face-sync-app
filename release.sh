@@ -27,7 +27,7 @@
 
 set -euo pipefail
 
-VERSION_FILE="${VERSION_FILE:-version.json}"
+VERSION_FILE="${VERSION_FILE:-manifest.json}"
 DIST_DIR="${DIST_DIR:-build}"
 CHANGELOG_FILE="${CHANGELOG_FILE:-CHANGELOG.md}"
 DRY_RUN="${DRY_RUN:-0}"

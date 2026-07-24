@@ -8,6 +8,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+# 2026-07-24
+
+## [1.2.3] - launcher
+### Added
+- Added `supported_runtimes` and `supported_os` validation guards prior to initiating variant package downloads.
+- Added automatic legacy binary file cleanup post-update to gracefully migrate pre-rename installations to the new naming scheme.
+
+### Changed
+- Pointed `manifestURL` to `manifest.json` on the primary `face-sync` repository.
+- Integrated dynamic `{version}/{runtime}/{os}` placeholder resolution using `appRuntime` (injected via `ldflags`) and `runtime.GOOS`.
+- Refactored bundled service binary names to streamline system architecture:
+  - `backend` $\rightarrow$ `core`
+  - `worker` $\rightarrow$ `processor`
+  - `mediamtx` $\rightarrow$ `stream`
+  - `piper` $\rightarrow$ `voice`
+  *(Note: `webui` remain unchanged)*
+
+### Fixed
+- Fixed a process hanging issue during `restartSelf` on Windows where `cmd /C start "" /MIN <script>` spawned an orphaned, interactive command window. Replaced the execution logic with direct `cmd /C <script>` invocation to respect `HideWindow` parameters and prevent unclosed background console sessions.
+
+## [1.4.0] - updater
+### Added
+- Added dynamic placeholder resolution for `{version}`, `{runtime}`, and `{os}` parameters within `download_url` entries in `manifest.json`.
+- Added runtime and OS detection fallback mechanism (`cuda` and native `GOOS`) using `.env` inputs for precise platform variant targeting.
+
+### Changed
+- Updated the update Manifest URL to point to `manifest.json` (migrated from legacy `version.json`).
+
+---
+
 # 2026-07-22
 
 ## [1.5.0] - backend
