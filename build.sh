@@ -6,7 +6,7 @@ set -e
 CWD=$(pwd)
 TARGET_DIR="../sources"
 BUILD_DIR="$CWD/build"
-VERSION_JSON="$CWD/version.json"
+VERSION_JSON="$CWD/manifest.json"
 
 case "$1" in
     --cuda)     PARAM="cuda" ;;
@@ -108,7 +108,10 @@ else
     fi
 
     echo "🤐 Compressing Worker binary & Models folder to .tar.gz..."
-    tar -czf "$WORKER_TARGET" -C "$(dirname "$WORKER_BIN")" "$(basename "$WORKER_BIN")" -C "../" models
+    tar -czf "$WORKER_TARGET" \
+        --transform="s|^$(basename "$WORKER_BIN")\$|main.bin|" \
+        -C "$(dirname "$WORKER_BIN")" "$(basename "$WORKER_BIN")" \
+        -C "../" models
     echo "✅ Worker successfully compressed."
     cd "$CWD"
 fi

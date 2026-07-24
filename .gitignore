@@ -5,7 +5,8 @@ app-bin/
 storage/
 models/
 build/
-.env
+.env*
+!.env.example
 *.bin
 backend
 webui/

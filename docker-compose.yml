@@ -10,10 +10,9 @@ services:
       - DB_PORT=5432
       - REDIS_HOST=127.0.0.1
       - PORT=8000
-
     volumes:
       - ./.env:/app/.env
-      - ./local_version.json:/app/version.json
+      - ./version.json:/app/version.json
       - ./storage:/storage
       - flag_data:/app/flag
     depends_on:

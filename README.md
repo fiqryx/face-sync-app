@@ -71,6 +71,10 @@ cd face-sync
 Let Docker handle the heavy lifting. Run the following command to download dependencies, build the necessary images, and start all services in the background (detached mode):
 
 ```bash
+# Create the environment file from the example to prevent Docker from mounting a directory
+cp .env.example .env
+
+# Build and start the containers
 docker-compose up --build -d
 ```
 
@@ -91,7 +95,7 @@ If the status shows `Up` or `Running`, the installation is successful!
 Open your web browser and navigate to:
 
 ```
-http://localhost:3000
+http://localhost
 ```
 
-*(If you are deploying this on a remote server, replace `localhost:3000` with your server's public IP address.)*
+*(If you are deploying this on a remote server, replace `localhost` with your server's public IP address.)*
