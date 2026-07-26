@@ -10,6 +10,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 # 2026-07-26
 
+## [1.6.1] - backend
+### Fixed
+- Fixed the static file server configuration to correctly resolve and serve storage files directly from the designated path defined within the `.env` configuration file, rather than defaulting to incorrect directories.
+
+## [1.3.1] - launcher
+### Changed
+- Re-released and bumped the Launcher version to encapsulate and bundle the latest patch update from the backend (`v1.6.1`).
+
 ## [1.6.0] - backend
 ### Added
 - Added global license quota enforcement mechanisms across Department, Employee, and Camera repositories. Batch imports are now intelligently truncated to fit remaining quotas instead of rejecting entire payloads outright.
