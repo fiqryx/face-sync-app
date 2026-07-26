@@ -8,6 +8,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+# 2026-07-26
+
+## [1.6.0] - backend
+### Added
+- Added global license quota enforcement mechanisms across Department, Employee, and Camera repositories. Batch imports are now intelligently truncated to fit remaining quotas instead of rejecting entire payloads outright.
+- Added automated self-service Community License request workflows within `LicenseService` for frictionless deployments.
+- Added a comprehensive `TelemetryService` orchestrating pulse checks, user feedback, and usage counters. Features robust cron-based scheduling for daily log uploads, 6-hour flushes, and boot-time catch-up routines to recover data from missed downtime windows.
+
+### Changed
+- Refactored daily telemetry log uploads to be fully idempotent, automatically purging files post-upload and recording explicit logs when queues are empty.
+- Removed the default department factory from the database seeder.
+
+### Fixed
+- Fixed critical race conditions within the `LicenseService` shared state by implementing `sync.RWMutex` locking across read/write operations and securing active plan bounds inside an encrypted lockfile.
+- Fixed error visibility during the license validation flow by replacing strict `Decoder.Decode` bindings with `io.ReadAll`, properly differentiating between "failed to reach server" network errors and active "server rejected key" denials.
+- Fixed inaccurate Attendance Summary aggregate counting metrics feeding the overview analytics dashboard.
+
+## [1.5.0] - webui
+### Added
+- Added a dedicated "System & License" tab inside the settings panel detailing active plans, limit usages, expiration thresholds, and a guided "Start with Community Edition" self-service activation dialog.
+- Added page-view telemetry tracking logic (excluding Kiosk routes) supported by a debounced `TelemetryProvider`.
+- Added a `PulseCheckWidget` (a biweekly satisfaction popup) and a global floating `FeedbackWidget` to seamlessly route operator experiences back to the engineering telemetry stream.
+- Added advanced Employee KPI analytics tracking Discipline Index, Attendance ratios, and Punctuality percentiles within the employee detail page and the monthly summary `.xlsx` export.
+
+## [1.3.0] - launcher
+### Added
+- Added `GetWebUIPort()` application bindings to dynamically read the active `WEBUI_PORT` from local `.env` variables (defaulting to 3000 if unset).
+- Added a live dashboard URL badge to the Services UI header alongside a functional "Open Dashboard" footer action button utilizing the native Wails `BrowserOpenURL` invocation.
+
+### Changed
+- Re-released and bumped the central Launcher ecosystem bundle version to deliver the major architectural updates across Backend (`v1.6.0`), and WebUI (`v1.5.0`).
+
+---
+
 # 2026-07-24
 
 ## [1.2.3] - launcher
