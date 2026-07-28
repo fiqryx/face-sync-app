@@ -8,6 +8,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+# 2026-07-28
+
+## [1.4.0] - launcher
+### Changed
+- Re-released and bumped the central Launcher ecosystem version to bundle and encapsulate the latest robust media processing updates across the Backend (`v1.7.0`), WebUI (`v1.6.0`), and Worker (`v1.4.0`) components.
+
+## [1.7.0] - backend
+### Added
+- Introduced event-driven recording capabilities by adding `record_on_detect` and `record_segment_secs` configuration fields to the device/camera data schemas.
+
+### Fixed
+- Enforced strict scope validation and limit boundary checks during the creation and provisioning workflows of new camera devices.
+
+### Security
+- Implemented robust Magic Byte (file signature) validation within the file upload middleware to definitively verify payload integrity and mitigate malicious file injection vectors.
+
+## [1.6.0] - webui
+### Added
+- Upgraded the camera management interface by integrating a dedicated "Record on Detect" toggle and a dynamic input field for configuring "Recording Segment Duration (Seconds)".
+
+## [1.4.0] - worker
+### Added
+- Engineered a new, highly robust `Recorder` class responsible for managing complex video stream lifecycles, including initialization, start/stop executions, and seamless segment finalization.
+- Integrated automated "Record on Detect" processing directly into the active device stream pipeline, allowing the system to instantly capture and save video segments triggered by recognition events.
+
+---
+
 # 2026-07-26
 
 ## [1.6.1] - backend
