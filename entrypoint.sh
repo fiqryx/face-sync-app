@@ -46,10 +46,10 @@ export PIPER_PORT="${PIPER_PORT:-5500}"
 export WEBUI_PORT="${WEBUI_PORT:-3000}"
 
 # ==========================================
-# 3. DATABASE SYNC 
+# 3. DATABASE SETUP 
 # ==========================================
-echo "[BOOT] Sync database..."
-./backend migrate
+# echo "[BOOT] Sync database..."
+# ./backend migrate
 
 if [ ! -f "$DB_FLAG_FILE" ]; then
     echo "[BOOT] Fresh environment detected. Running setup environment..."

@@ -8,6 +8,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+# 2026-08-01
+
+## [1.8.0] - backend
+### Added
+- Engineered a global GORM plugin to enforce hierarchical license quotas (covering employees, departments, and devices) directly at the query level. This guarantees strict structural isolation and consistent data boundaries across all list, export, and analytics endpoints, natively supporting nested raw joins regardless of the active license state.
+
+### Changed
+- Refactored the core attendance evaluation engine to securely encapsulate return payloads within a unified `AttendanceResult` struct. 
+- Overhauled localized greeting logic (ID/EN) to align with a modernized, security-centric UI theme (e.g., "Access denied").
+- Optimized Text-to-Speech (TTS) response latency by strategically stripping artificial punctuation constraints from greeting strings, ensuring instantaneous audio playback.
+
+## [1.7.0] - webui
+### Added
+- Upgraded the Data Pagination component to dynamically render total dataset metrics while seamlessly aligning with right-side action controls for improved UX.
+- Enhanced the native Excel export pipeline to automatically enforce strict alphabetical sorting (by employee name) prior to worksheet generation.
+
+### Fixed
+- Fixed an edge-case logic flaw in the import parser interface to gracefully process and return all dataset rows when data limit parameters are omitted or explicitly set to zero.
+
+## [1.5.0] - updater
+### Added
+- Introduced an automated pre-flight database migration orchestration. The updater now gracefully halts the core backend service, applies schema migrations directly against the newly extracted binary, and subsequently restarts the service. This guarantees transactional safety and prevents schema collisions during live in-flight queries.
+
+## [1.5.0] - launcher
+### Changed
+- Re-released and bumped the central Launcher ecosystem version to bundle the latest updates across the Backend (`v1.8.0`), WebUI (`v1.7.0`), and Updater (`v1.5.0`).
+- Optimized the startup initialization sequence to intelligently bypass database migrations unless a deterministic update has been applied, significantly accelerating boot times.
+
+### Fixed
+- Engineered cross-instance ownership locking via named mutexes to establish safe multi-instance service spawning, entirely eliminating redundant background process generation while preventing UI hanging on non-owner instances.
+- Pinned the system tray execution explicitly to the primary OS thread to resolve intermittent context menu rendering failures and maintain deep OS integration stability.
+
+---
+
 # 2026-07-28
 
 ## [1.4.0] - launcher

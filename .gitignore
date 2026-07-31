@@ -16,3 +16,4 @@ convert_release.sh
 *.txt
 *.wav
 update.md
+setup.json

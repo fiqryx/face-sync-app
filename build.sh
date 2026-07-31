@@ -67,7 +67,7 @@ check_artifact() {
     return 1
 }
 
-echo "📦 [1/4] Processing Backend..."
+echo "📦 [1/6] Processing Backend..."
 BACKEND_TARGET="$BUILD_DIR/backend_${BACKEND_VER}_linux_amd64.tar.gz"
 
 if check_artifact "backend_*_linux_amd64.tar.gz" "$BACKEND_TARGET"; then
@@ -87,7 +87,7 @@ else
     cd "$CWD"
 fi
 
-echo "📦 [2/4] Processing Worker..."
+echo "📦 [2/6] Processing Worker..."
 cd "$CWD"
 cd "$TARGET_DIR/worker"
 WORKER_VER=$(jq -r '.worker.version' "$VERSION_JSON")
@@ -116,7 +116,7 @@ else
     cd "$CWD"
 fi
 
-echo "📦 [3/4] Processing Updater..."
+echo "📦 [3/6] Processing Updater..."
 cd "$CWD"
 cd "$TARGET_DIR/updater"
 UPDATER_VER=$(jq -r '.updater.version' "$VERSION_JSON")
@@ -141,7 +141,7 @@ else
     cd "$CWD"
 fi
 
-echo "📦 [4/4] Processing WebUI..."
+echo "📦 [4/6] Processing WebUI..."
 cd "$CWD"
 cd "$TARGET_DIR/web-ui"
 WEBUI_VER=$(jq -r '.webui.version' "$VERSION_JSON")
@@ -177,6 +177,102 @@ else
     # Return to the initial working directory
     cd "$CWD"
     echo "✅ WebUI successfully compressed."
+fi
+
+echo "📦 [5/6] Processing Launcher..."
+cd "$CWD"
+cd "$TARGET_DIR/launcher"
+LAUNCHER_VER=$(jq -r '.launcher.version' "$VERSION_JSON")
+LAUNCHER_OUTPUT_DIR="$(pwd)/output/windows"
+cd "$CWD"
+
+LAUNCHER_DIRECTML_TARGET="$BUILD_DIR/launcher_${LAUNCHER_VER}_directml_windows_amd64.zip"
+LAUNCHER_CUDA_TARGET="$BUILD_DIR/launcher_${LAUNCHER_VER}_cuda_windows_amd64.zip"
+
+find_versioned_zip() {
+    local variant="$1"
+    [ -d "$LAUNCHER_OUTPUT_DIR" ] || return 0
+    find "$LAUNCHER_OUTPUT_DIR" -maxdepth 1 -iname "launcher_${LAUNCHER_VER}_${variant}_windows_amd64.zip" 2>/dev/null | head -n 1
+}
+
+# Bersihin sisa zip versi lain di output dir (yang beda dari versi manifest saat ini)
+if [ -d "$LAUNCHER_OUTPUT_DIR" ]; then
+    find "$LAUNCHER_OUTPUT_DIR" -maxdepth 1 -iname "launcher_*_windows_amd64.zip" ! -iname "launcher_${LAUNCHER_VER}_*" -exec rm -f {} \;
+fi
+
+# ── DirectML ─────────────────────────────────────────────
+if [ -f "$LAUNCHER_DIRECTML_TARGET" ]; then
+    echo "⏭️  Duplicate version found (launcher_${LAUNCHER_VER}_directml), skip build."
+else
+    EXISTING_DIRECTML_ZIP=$(find_versioned_zip "directml")
+    if [ -n "$EXISTING_DIRECTML_ZIP" ]; then
+        echo "ℹ️  Found existing DirectML zip matching manifest version v${LAUNCHER_VER}, skip build & reuse."
+        mv "$EXISTING_DIRECTML_ZIP" "$LAUNCHER_DIRECTML_TARGET"
+    else
+        cd "$TARGET_DIR/launcher"
+        echo "🛠️  Building Launcher (DirectML)..."
+        sh build.sh --directml
+
+        DIRECTML_ZIP=$(find_versioned_zip "directml")
+        if [ -z "$DIRECTML_ZIP" ]; then
+            echo "❌ Error: DirectML zip v${LAUNCHER_VER} not found in $LAUNCHER_OUTPUT_DIR after build!"
+            exit 1
+        fi
+        mv "$DIRECTML_ZIP" "$LAUNCHER_DIRECTML_TARGET"
+        cd "$CWD"
+    fi
+    echo "✅ Launcher (DirectML) ready in build dir."
+fi
+
+# ── CUDA ─────────────────────────────────────────────────
+if [ -f "$LAUNCHER_CUDA_TARGET" ]; then
+    echo "⏭️  Duplicate version found (launcher_${LAUNCHER_VER}_cuda), skip build."
+else
+    EXISTING_CUDA_ZIP=$(find_versioned_zip "cuda")
+    if [ -n "$EXISTING_CUDA_ZIP" ]; then
+        echo "ℹ️  Found existing CUDA zip matching manifest version v${LAUNCHER_VER}, skip build & reuse."
+        mv "$EXISTING_CUDA_ZIP" "$LAUNCHER_CUDA_TARGET"
+    else
+        cd "$TARGET_DIR/launcher"
+        echo "🛠️  Building Launcher (CUDA)..."
+        sh build.sh --cuda
+
+        CUDA_ZIP=$(find_versioned_zip "cuda")
+        if [ -z "$CUDA_ZIP" ]; then
+            echo "❌ Error: CUDA zip v${LAUNCHER_VER} not found in $LAUNCHER_OUTPUT_DIR after build!"
+            exit 1
+        fi
+        mv "$CUDA_ZIP" "$LAUNCHER_CUDA_TARGET"
+        cd "$CWD"
+    fi
+    echo "✅ Launcher (CUDA) ready in build dir."
+fi
+
+echo "📦 [6/6] Processing Docker Deployment Bundle..."
+cd "$CWD"
+
+DOCKER_TARGET="$BUILD_DIR/facesync_docker_${BACKEND_VER}_amd64.tar.gz"
+
+if check_artifact "facesync_docker_*_amd64.tar.gz" "$DOCKER_TARGET"; then
+    :
+else
+    DOCKER_STAGING=$(mktemp -d)
+
+    echo "📁 Copying required docker deployment files..."
+    cp "$CWD/docker-compose.yml"   "$DOCKER_STAGING/"
+    cp "$CWD/Dockerfile"           "$DOCKER_STAGING/"
+    cp "$CWD/entrypoint.sh"        "$DOCKER_STAGING/"
+    cp "$CWD/supervisord.conf"     "$DOCKER_STAGING/"
+    cp "$CWD/manifest.json"        "$DOCKER_STAGING/"
+
+    echo "🔧 Converting .env.example -> .env..."
+    cp "$CWD/.env.example"         "$DOCKER_STAGING/.env"
+
+    echo "🤐 Compressing Docker deployment bundle to .tar.gz..."
+    tar -czf "$DOCKER_TARGET" -C "$DOCKER_STAGING" .
+
+    rm -rf "$DOCKER_STAGING"
+    echo "✅ Docker deployment bundle successfully compressed."
 fi
 
 # =====================================================================
