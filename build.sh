@@ -263,7 +263,7 @@ else
     cp "$CWD/Dockerfile"           "$DOCKER_STAGING/"
     cp "$CWD/entrypoint.sh"        "$DOCKER_STAGING/"
     cp "$CWD/supervisord.conf"     "$DOCKER_STAGING/"
-    cp "$CWD/manifest.json"        "$DOCKER_STAGING/"
+    cp "$CWD/version.json"        "$DOCKER_STAGING/"
 
     echo "🔧 Converting .env.example -> .env..."
     cp "$CWD/.env.example"         "$DOCKER_STAGING/.env"

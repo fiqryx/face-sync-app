@@ -8,6 +8,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+# 2026-08-04
+
+## [1.8.1] - backend
+### Fixed
+- Fixed the database restoration engine to safely disable and bypass foreign key constraints during the data ingestion cycle, preventing relational collision errors.
+- Fixed the Discipline KPI summary loop on the employee detail endpoint to accurately classify and process Work From Home (WFH) and leave statuses.
+- Fixed a race condition within the license validation flow by enforcing strict synchronous initialization of license data prior to downstream service consumption.
+
+## [1.7.1] - webui
+### Changed
+- Refactored the Employee Detail calendar logic to aggregate dates dynamically by workday codes, unlocking highly flexible and state-driven UI styling.
+
+### Fixed
+- Fixed the facial enrollment instruction sequence by properly swapping the left and right head-turn directives for a more intuitive user experience.
+- Fixed the punctuality KPI calculation matrix within the reporting module to accurately track and credit early check-in events.
+
+## [1.6.0] - launcher
+### Added
+- Engineered a dynamic changelog viewer directly injected into the updater prompt, allowing users to review release notes seamlessly before initiating system updates.
+
+### Changed
+- Re-released and bumped the central Launcher ecosystem version to bundle the latest critical patches across the Backend (`v1.8.1`) and WebUI (`v1.7.1`).
+
+---
+
 # 2026-08-01
 
 ## [1.8.0] - backend
